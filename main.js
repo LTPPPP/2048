@@ -4,8 +4,17 @@ let score = 0;
 
 function createGrid() {
   grid = Array.from({ length: gridSize }, () => Array(gridSize).fill(0));
+  score = 0; // Reset score
   addTile();
   addTile();
+}
+
+function restartGame() {
+  // Reset the grid and score
+  createGrid();
+
+  // Re-render the grid
+  renderGrid();
 }
 
 function addTile() {
@@ -37,6 +46,14 @@ function renderGrid() {
       if (grid[i][j] !== 0) {
         tile.textContent = grid[i][j];
         tile.setAttribute("data-value", grid[i][j]);
+
+        // Add merge animation class temporarily
+        setTimeout(() => {
+          tile.classList.add("merge");
+          setTimeout(() => {
+            tile.classList.remove("merge");
+          }, 200);
+        }, 50);
       }
       container.appendChild(tile);
     }
@@ -197,10 +214,49 @@ function checkGameStatus() {
   // Kiểm tra xem còn các ô có thể merge không
   const canMerge = checkMergePossibility();
 
+  // Kiểm tra xem đã đạt được ô 2048 chưa
+  const hasWon = grid.some((row) => row.includes(2048));
+
+  if (hasWon) {
+    showWinPopup();
+    return;
+  }
+
   if (!hasEmptyTile && !canMerge) {
     alert("Game Over! Điểm của bạn: " + score);
     createGrid(); // Khởi động lại game
+    renderGrid();
   }
+}
+
+function showWinPopup() {
+  const popupOverlay = document.createElement("div");
+  popupOverlay.classList.add("popup-overlay");
+
+  const popupContent = document.createElement("div");
+  popupContent.classList.add("popup-content");
+
+  popupContent.innerHTML = `
+    <h2>Chúc mừng!</h2>
+    <p>Điểm số: ${score}</p>
+    <div class="popup-buttons">
+      <button id="restart-popup-btn">Chơi lại</button>
+    </div>
+  `;
+
+  popupOverlay.appendChild(popupContent);
+  document.body.appendChild(popupOverlay);
+
+  // Sự kiện nút tiếp tục
+  document.getElementById("continue-btn").addEventListener("click", () => {
+    document.body.removeChild(popupOverlay);
+  });
+
+  // Sự kiện nút chơi lại
+  document.getElementById("restart-popup-btn").addEventListener("click", () => {
+    document.body.removeChild(popupOverlay);
+    restartGame();
+  });
 }
 
 function checkMergePossibility() {
@@ -216,7 +272,7 @@ function checkMergePossibility() {
   }
   return false;
 }
-
+document.getElementById("restart-btn").addEventListener("click", restartGame);
 document.addEventListener("keydown", handleInput);
 
 // Khởi động game

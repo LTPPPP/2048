@@ -104,3 +104,89 @@ h1 {
     background: #edc22e;
     color: #f9f6f2;
 }
+
+
+/* Previous CSS remains the same, add these styles at the end */
+.restart-btn {
+    margin-top: 15px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #8f7a66;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.restart-btn:hover {
+    background-color: #9f8a76;
+}
+
+
+/* Popup styles */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 90%;
+}
+
+.popup-content h2 {
+    color: #776e65;
+    margin-bottom: 15px;
+}
+
+.popup-content p {
+    color: #776e65;
+    margin-bottom: 20px;
+}
+
+.popup-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.popup-buttons button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.popup-buttons #continue-btn {
+    background-color: #8f7a66;
+    color: white;
+}
+
+.popup-buttons #continue-btn:hover {
+    background-color: #9f8a76;
+}
+
+.popup-buttons #restart-popup-btn {
+    background-color: #f2b179;
+    color: white;
+}
+
+.popup-buttons #restart-popup-btn:hover {
+    background-color: #f2c079;
+}
