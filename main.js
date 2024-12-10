@@ -1,9 +1,13 @@
 const gridSize = 4;
 let grid = [];
 let score = 0;
+let previousGrid = []; // Store the previous grid state for animation
 
 function createGrid() {
   grid = Array.from({ length: gridSize }, () => Array(gridSize).fill(0));
+  previousGrid = Array.from({ length: gridSize }, () =>
+    Array(gridSize).fill(0)
+  );
   score = 0; // Reset score
   addTile();
   addTile();
@@ -15,6 +19,14 @@ function restartGame() {
 
   // Re-render the grid
   renderGrid();
+}
+
+function storePreviousGrid() {
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      previousGrid[i][j] = grid[i][j];
+    }
+  }
 }
 
 function addTile() {
@@ -43,9 +55,20 @@ function renderGrid() {
     for (let j = 0; j < gridSize; j++) {
       const tile = document.createElement("div");
       tile.classList.add("tile");
+
       if (grid[i][j] !== 0) {
         tile.textContent = grid[i][j];
         tile.setAttribute("data-value", grid[i][j]);
+
+        // Check if tile was in a different position in the previous grid
+        const prevPos = findPreviousPosition(i, j);
+        if (prevPos) {
+          tile.classList.add("slide");
+          tile.style.setProperty("--start-x", `${prevPos.y * 100}px`);
+          tile.style.setProperty("--start-y", `${prevPos.x * 100}px`);
+          tile.style.setProperty("--end-x", `${j * 100}px`);
+          tile.style.setProperty("--end-y", `${i * 100}px`);
+        }
 
         // Add merge animation class temporarily
         setTimeout(() => {
@@ -60,6 +83,20 @@ function renderGrid() {
   }
 
   checkGameStatus();
+}
+
+function findPreviousPosition(newRow, newCol) {
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      if (
+        previousGrid[i][j] === grid[newRow][newCol] &&
+        (i !== newRow || j !== newCol)
+      ) {
+        return { x: j, y: i };
+      }
+    }
+  }
+  return null;
 }
 
 function moveLeft() {
@@ -184,6 +221,8 @@ function moveDown() {
 
 function handleInput(event) {
   let moved = false;
+  storePreviousGrid(); // Store the current grid before moving
+
   switch (event.key) {
     case "ArrowLeft":
       moved = moveLeft();
@@ -240,6 +279,7 @@ function showWinPopup() {
     <h2>Chúc mừng!</h2>
     <p>Điểm số: ${score}</p>
     <div class="popup-buttons">
+      <button id="continue-btn">Tiếp tục</button>
       <button id="restart-popup-btn">Chơi lại</button>
     </div>
   `;
@@ -272,6 +312,7 @@ function checkMergePossibility() {
   }
   return false;
 }
+
 document.getElementById("restart-btn").addEventListener("click", restartGame);
 document.addEventListener("keydown", handleInput);
 
